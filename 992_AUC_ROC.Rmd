@@ -1,0 +1,54 @@
+---
+title: "AUC-ROC Graphs"
+author: "David Hu"
+date: "2024-04-21"
+output: html_document
+---
+
+# Creates the AUC-ROC for both train and test. Run all of the other files to plot these graphs
+```{r}
+library(pROC)
+#train AUC-ROC
+roc(train_data$outcome.PE, predictions_lrt$PE, col="salmon", lwd=2, print.auc=TRUE, plot=TRUE)
+plot.roc(train_data$outcome.PE, predictions_rft$PE, col="goldenrod", lwd=2, print.auc=TRUE, add=TRUE,print.auc.y=.40)
+plot.roc(train_data$outcome.PE, predictions_nbt$PE, col="gray", lwd=2, print.auc=TRUE, add=TRUE,print.auc.y=.30)
+plot.roc(train_data$outcome.PE, predictions_svmt$PE, col="black", lwd=2, print.auc=TRUE, add=TRUE, print.auc.y=.20)
+title(main = "AUC-ROC Train", line = 2.5)
+
+# Add legend
+legend("bottomright",
+       legend=c("Logistic Regression", "Random Forest", "Naive Bayes", 
+                "SVM"),
+       col=c("salmon", "goldenrod", "gray", "black"),
+       lwd=4, cex =0.8, xpd = TRUE)
+```
+
+
+```{r}
+
+# Calculate ROC curves
+roc_lr <- roc(test_data$outcome.PE, predictions_lr$PE)
+roc_rf <- roc(test_data$outcome.PE, predictions_rf$PE)
+roc_nb <- roc(test_data$outcome.PE, predictions_nb$PE)
+roc_svm <- roc(test_data$outcome.PE, predictions_svm$PE)
+
+# Plot ROC curves with custom x-axis
+plot(1 - roc_lr$specificities, roc_lr$sensitivities, type="l", col="salmon", lwd=2, main="AUC-ROC on Test Data", xlab="1 - Specificity", ylab="Sensitivity", xlim=c(0, 1), ylim=c(0, 1))
+lines(1 - roc_rf$specificities, roc_rf$sensitivities, type="l", col="goldenrod", lwd=2)
+lines(1 - roc_nb$specificities, roc_nb$sensitivities, type="l", col="gray", lwd=2)
+lines(1 - roc_svm$specificities, roc_svm$sensitivities, type="l", col="black", lwd=2)
+
+# Add legend
+legend("bottomright",
+       legend=c("Logistic Regression", "Random Forest", "Naive Bayes", 
+                "SVM"),
+       col=c("salmon", "goldenrod", "gray", "black"),
+       lwd=4, cex =0.8, xpd = TRUE)
+
+# Print AUC values on the plot
+text(0.8, 0.65, paste("LR AUC =", round(auc(roc_lr), 2)), pos=4, col="salmon")
+text(0.8, 0.55, paste("RF AUC =", round(auc(roc_rf), 2)), pos=4, col="goldenrod")
+text(0.8, 0.45, paste("NB AUC =", round(auc(roc_nb), 2)), pos=4, col="gray")
+text(0.775, 0.35, paste("SVM AUC =", round(auc(roc_svm), 2)), pos=4, col="black")
+```
+
