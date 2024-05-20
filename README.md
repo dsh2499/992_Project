@@ -8,9 +8,13 @@ to assess the viability of using models to predict pulmonary embolism given base
 
 Files:
 992_LR.R - Logistic Regression Model
+
 992_NB.R - Naive Bayes Model
+
 992_RF.R - Random Forest Model
+
 992_SVM.R - Support Vector Machine Model
+
 Each model predicted pulmonary embolism using a threshold determined by performance on training data. A confusion matrix was also made to get the specificity and senestivity of each model.
 
 992_AUC_ROC.R
